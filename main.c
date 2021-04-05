@@ -142,12 +142,12 @@ int computeFrequencies(char *filename) {
         table[c]->frequency++;
         total_bytes++;
         addCar(c);
-        printf(" - %d added %d ",yy, c);
+        //printf(" - %d added %d ",yy, c);
         countChars++;
         yy++;
     }
     fclose(file);
-    printf("\ncount of chars: %d\n", countChars);
+    //printf("\ncount of chars: %d\n", countChars);
     return EXIT_SUCCESS;
 }
 
@@ -257,7 +257,7 @@ void create_final_list_encoding() {
         }
     }
     countCodes = y;
-    printf("count of codes: %d \n",countCodes);
+    //printf("count of codes: %d \n",countCodes);
 }
 
 void encoding() {
@@ -289,36 +289,36 @@ void addCarCodeAndSaveToFile(char *filename) {
     int y=0;
     for (int i = 0; i < ASCII; i++) {
         if (can_list[i].length > 0) {
-            printf(" %d ", can_list[i].length);
+            //printf(" %d ", can_list[i].length);
             fwrite(&can_list[i].length, sizeof(uc), 1, file);
             y=i;
         }
     }
     can_list[y+1].length=0;
     fwrite(&can_list[y+1].length, sizeof(uc), 1, file);
-    printf(" %d ", can_list[y+1].length);
+    //printf(" %d ", can_list[y+1].length);
     for (int i = 0; i < ASCII; i++) {
         if (can_list[i].length > 0) {
-            printf(" %d ", can_list[i].symbol);
+            //printf(" %d ", can_list[i].symbol);
             fwrite(&can_list[i].symbol, sizeof(uc), 1, file);
         }
     }
     uc t=0;
     fwrite(&t, sizeof(uc), 1, file);
-    printf(" %d ", t);
+    //printf(" %d ", t);
 
     carCode *t3;
     listOfCodes = t3;
-    printf("\nlist of codes: ");
+    //printf("\nlist of codes: ");
     while (listOfCars != NULL) {
-        printf(" car %d - ", listOfCars->symbol);
+        //printf(" car %d - ", listOfCars->symbol);
         for (int i = 0; i < countCodes; i++) {
             //printf(" %d ", can_list[i].symbol);
             if (listOfCars->symbol == can_list[i].symbol) {
                 t3= (carCode *) malloc(sizeof(carCode));
                 t3->encoding = can_list[i].encoding;
                 fwrite(&t3->encoding, sizeof(uc), 1, file);
-                printf("("B_B_P") ", B2B(t3->encoding));
+                //printf("("B_B_P") ", B2B(t3->encoding));
                 t3->next = NULL;
             }
         }
@@ -367,7 +367,7 @@ void read_file_binario(char *filename) {
         }
         int w = 0;
         uc c = (uc) ch;
-        printf("\n reading first c = %d ", c);
+        //printf("\n reading first c = %d ", c);
         can_list2[w].length = c;
         //printf("length = %d ", can_list2[w].length);
         w++;
@@ -377,7 +377,7 @@ void read_file_binario(char *filename) {
             if (c == 0) {
                 break;
             }
-            printf(" - reading c = %d ", c);
+            //printf(" - reading c = %d ", c);
             can_list2[w].length = c;
             //printf("length = %d ", can_list2[w].length);
             w++;
@@ -388,7 +388,7 @@ void read_file_binario(char *filename) {
         int w2 = 0;
         while (1) {
             fread(&c2, sizeof(uc), 1, file);
-            printf(" - reading c2 = %d ", c2);
+            //printf(" - reading c2 = %d ", c2);
             if (c2 == 0) {
                 break;
             }
@@ -399,9 +399,9 @@ void read_file_binario(char *filename) {
         break;
     }
     for(int e=0; e<countCodesD; e++){
-        printf("\n %d - %d %d "B_B_P" ",e, can_list2[e].symbol, can_list2[e].length, B2B(can_list2[e].encoding));
+        //printf("\n %d - %d %d "B_B_P" ",e, can_list2[e].symbol, can_list2[e].length, B2B(can_list2[e].encoding));
     }
-    printf("\n");
+    //printf("\n");
 
     listOfCodesD = (carCode *) malloc(sizeof(carCode));
     carCode *t3;
@@ -410,7 +410,7 @@ void read_file_binario(char *filename) {
     ch = fgetc(file);
     while (EOF != ch) {
         uc c3 = (uc) ch;
-        printf("\n %d reading c3 "B_B_P" ",ww, B2B(c3));
+        //printf("\n %d reading c3 "B_B_P" ",ww, B2B(c3));
         t3->encoding=c3;
         t3->next=NULL;
         countCharsD++;
@@ -424,14 +424,14 @@ void read_file_binario(char *filename) {
     fclose(file);
     carCode *t9;
     t9 = listOfCodesD;
-    printf("\n printing list of codes: ");
+    //printf("\n printing list of codes: ");
     int yyy=0;
     while(t9->next!=NULL){
-        printf(" %d "B_B_P" ",yyy, B2B(t9->encoding));
+        //printf(" %d "B_B_P" ",yyy, B2B(t9->encoding));
         t9=t9->next;
         yyy++;
     }
-    printf(" last %d "B_B_P" ",yyy, B2B(t9->encoding));
+    //printf(" last %d "B_B_P" ",yyy, B2B(t9->encoding));
 }
 
 void decoding() {
@@ -451,22 +451,22 @@ void decoding() {
                 }
             }
         }
-        printf("\n%3d %2x ("B_B_P")", can_list2[i].symbol, can_list2[i].length, B2B(can_list2[i].encoding));
+        //printf("\n%3d %2x ("B_B_P")", can_list2[i].symbol, can_list2[i].length, B2B(can_list2[i].encoding));
         i++;
     }
 }
 void decode_listOfCodesAndSaveToFile(char *c_outAfterDeComp) {
-    printf("\n count of chars %d ", countCharsD);     printf("count of codes %d\n ", countCodesD);
+    //printf("\n count of chars %d ", countCharsD);     printf("count of codes %d\n ", countCodesD);
     FILE *file2 = fopen(c_outAfterDeComp, "w");
     //car *listOfCarsD = NULL;
     carCode *r2;
     r2= listOfCodesD;
-    printf("list of codes: ");
+    //printf("list of codes: ");
     while (r2 != NULL) {
-        printf("\n "B_B_P" ", B2B(r2->encoding));
+        //printf("\n "B_B_P" ", B2B(r2->encoding));
         //listOfCarsD=(car *) malloc(sizeof(car));
         for (int t = 0; t < countCodesD; t++) {
-            printf("\n %d "B_B_P" ", t, B2B(can_list2[t].encoding));
+            //printf("\n %d "B_B_P" ", t, B2B(can_list2[t].encoding));
             int l1, l2, l3, l4, l5, l6, l7, l8;                   int k1, k2, k3, k4, k5, k6, k7, k8;
             l1 = bitStatus(&r2->encoding, 0);            k1 = bitStatus(&can_list2[t].encoding, 0);
             l2 = bitStatus(&r2->encoding, 1);            k2 = bitStatus(&can_list2[t].encoding, 1);
@@ -478,9 +478,9 @@ void decode_listOfCodesAndSaveToFile(char *c_outAfterDeComp) {
             l8 = bitStatus(&r2->encoding, 7);            k8 = bitStatus(&can_list2[t].encoding, 7);
             // converts codes to chars
             if (l1 == k1 && l2 == k2 && l3 == k3 && l4 == k4 && l5 == k5 && l6 == k6 && l7 == k7 && l8 == k8) {
-                printf("trovato");
+                //printf("trovato");
                 fwrite(&can_list2[t].symbol, sizeof(uc), 1, file2);
-                printf(" salvato nel file - %d",can_list2[t].symbol);
+                //printf(" salvato nel file - %d",can_list2[t].symbol);
             }
         }
         r2 = r2->next;
