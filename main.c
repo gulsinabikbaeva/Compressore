@@ -479,8 +479,13 @@ void decode_listOfCodesAndSaveToFile(char *c_outAfterDeComp) {
             // converts codes to chars
             if (l1 == k1 && l2 == k2 && l3 == k3 && l4 == k4 && l5 == k5 && l6 == k6 && l7 == k7 && l8 == k8) {
                 //printf("trovato");
-                fwrite(&can_list2[t].symbol, sizeof(uc), 1, file2);
-                //printf(" salvato nel file - %d",can_list2[t].symbol);
+                if(can_list2[t].symbol!=13){
+                    fwrite(&can_list2[t].symbol, sizeof(uc), 1, file2);
+                }
+                //printf(" - %d",can_list2[t].symbol);
+                /*if(can_list2[t].symbol==13){
+                    printf(" trovato ");
+                }*/
             }
         }
         r2 = r2->next;
