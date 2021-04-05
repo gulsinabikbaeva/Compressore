@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define ASCII 256
 #define TRUE 0
@@ -75,6 +76,8 @@ int countChars;
 int countCodes;
 int countCharsD;
 int countCodesD;
+clock_t start,end;
+double tempo, tempoD;
 
 void deComp(char *c_out, char *c_outAfterDeComp);
 void encoding();
@@ -324,28 +327,37 @@ void addCarCodeAndSaveToFile(char *filename) {
         }
         listOfCars = listOfCars->next;
     }
-    printf("\nFile e' stato compresso");
     fclose(file);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void compress(char *file_name_in, char *file_name_out) {
-
+    start=clock();
+    printf("Please wait...completed");
     createTreeTable();
     createCodeTable();
     computeFrequencies(file_name_in);
+    printf(" 10%%-");
     sortTable();
     buildTree();
+    printf("20%%-");
     computeCodeLen(table[0], 0);
+    printf("40%%-");
     //computeCanonicalEncoding
     //1. Sort code_table & save in list[total_bytes]
     create_final_list_encoding();
+    printf("60%%-");
     //2. Compute canonical encoding for each item in the list
     encoding();
+    printf("80%%-");
     //3. Encode the message and save to the output file
     addCarCodeAndSaveToFile(file_name_out);
+    printf("100%%");
     deleteTree(table[0]);
+    end=clock();
+    tempo=((double)(end-start))/CLOCKS_PER_SEC;
+    printf("\nFile has been compressed successfully in %.3lf seconds!", tempo);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -490,18 +502,24 @@ void decode_listOfCodesAndSaveToFile(char *c_outAfterDeComp) {
         }
         r2 = r2->next;
     }
-    printf("\nFile e' stato decompresso");
     fclose(file2);
 }
 
 void deComp(char *c_in2, char *c_outAfterDeComp) {
-
+    start=clock();
+    printf("Please wait...completed ");
     //open the file and read 1) arrayOfCodes[Capacity] + countCharsD number and 2) ff map[ASCII]
     read_file_binario(c_in2);
+    printf("30%%-");
     //convert the map to canonic Codes
     decoding();
+    printf("60%%-");
     //convert the codes to the listOfChars using listOfCodes and save to file
     decode_listOfCodesAndSaveToFile(c_outAfterDeComp);
+    printf("100%%");
+    end=clock();
+    tempoD=((double)(end-start))/CLOCKS_PER_SEC;
+    printf("\nFile has been decompressed successfully in %.3lf seconds!",tempoD);
 }
 
 int readFiles(char *filename1, char *filename2) {
