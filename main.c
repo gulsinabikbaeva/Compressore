@@ -499,6 +499,28 @@ void deComp(char *c_in2, char *c_outAfterDeComp) {
     decode_listOfCodesAndSaveToFile(c_outAfterDeComp);
 }
 
+int readFiles(char *filename1, char *filename2) {
+    FILE *file1 = fopen(filename1, "rb");
+    int yy=0;
+    printf("\nReading file1\n");
+    while (EOF != (ch = fgetc(file1))) {
+        uc c = (uc) ch;
+        printf(" %d-%d ",yy, c);
+        yy++;
+    }
+    fclose(file1);
+    FILE *file2 = fopen(filename2, "rb");
+    int tt=0;
+    printf("\nReading file2\n");
+    while (EOF != (ch = fgetc(file2))) {
+        uc c = (uc) ch;
+        printf(" %d-%d ",tt, c);
+        tt++;
+    }
+    fclose(file2);
+    return EXIT_SUCCESS;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char *argv[]) {
@@ -515,6 +537,8 @@ int main(int argc, char *argv[]) {
         } else if (strcmp(argv[1], "-d") == 0) {
             deComp(argv[2], argv[3]); // decomprimere (c_out, c_in2); // diff cin.txt cin2.txt
 
+        } else if(strcmp(argv[1], "-f") == 0){
+            readFiles(argv[2], argv[3]); // stampa contenuto binario di due file
         } else {
             fprintf(stderr,
                     "\nLe opzioni sono: -c per comprimere e -d per decomprimere. Si prega di specificare l'opzione da eseguire, il file di input ed il file di destinazione.\n");
