@@ -129,7 +129,7 @@ void createCodeTable() {
 }
 
 int computeFrequencies(char *filename) {
-    FILE *file = fopen(filename, "rb");
+    FILE *file = fopen(filename, "rb+");
     if (file == NULL) {
         printf("Problem opening file\n");
         return EXIT_FAILURE;
@@ -369,7 +369,7 @@ final_enc can_list2[ASCII];
 void read_file_binario(char *filename) {
     countCodesD=0;
     countCharsD=0;
-    FILE *file = fopen(filename, "rb");
+    FILE *file = fopen(filename, "rb+");
     if (file == NULL) {
         printf("\nIl file non esiste");
         exit(1);
@@ -476,7 +476,7 @@ void decoding() {
 }
 void decode_listOfCodesAndSaveToFile(char *c_outAfterDeComp) {
     //printf("\n count of chars %d ", countCharsD);     printf("count of codes %d\n ", countCodesD);
-    FILE *file2 = fopen(c_outAfterDeComp, "w");
+    FILE *file2 = fopen(c_outAfterDeComp, "wb+");
     //car *listOfCarsD = NULL;
     carCode *r2;
     r2= listOfCodesD;
@@ -504,8 +504,8 @@ void decode_listOfCodesAndSaveToFile(char *c_outAfterDeComp) {
                     //fputc(can_list2[t].symbol,file2);
 
                     fwrite(&can_list2[t].symbol, sizeof(uc), 1, file2);
+                    printf(" %d ",can_list2[t].symbol);
                 //}
-                printf(" %d ",can_list2[t].symbol);
                 /*if(can_list2[t].symbol==13){
                     printf(" trovato ");
                 }*/
