@@ -136,7 +136,7 @@ int computeFrequencies(char *filename) {
     }
     int yy=0;
     //printf("Reading file and computing frequencies\n");
-    printf("\nStep 1 - lettura file originale: \n");
+    //printf("\nStep 1 - lettura file originale: \n");
     while (EOF != (ch = fgetc(file))) {
         if (ferror(file) != 0) {
             printf("Problem opening file\n");
@@ -146,7 +146,7 @@ int computeFrequencies(char *filename) {
         table[c]->frequency++;
         total_bytes++;
         addCar(c);
-        printf(" %d ", c);
+        //printf(" %d ", c);
         countChars++;
         yy++;
     }
@@ -198,10 +198,10 @@ void printTree(node *tree) {
     if (tree == NULL || tree->frequency == 0) {
         return;
     } else {
-        printf("\n %d %d", tree->symbol, tree->frequency);
+        //printf("\n %d %d", tree->symbol, tree->frequency);
     }
-    printTree(tree->left);
-    printTree(tree->right);
+    //printTree(tree->left);
+    //printTree(tree->right);
 }
 
 void computeCodeLen(node *tree, uc codelen) {
@@ -314,7 +314,7 @@ void addCarCodeAndSaveToFile(char *filename) {
 
     carCode *t3;
     listOfCodes = t3;
-    printf("\nStep 2 - codifica e salvataggio nel file_2: \n");
+    //printf("\nStep 2 - codifica e salvataggio nel file_2: \n");
     while (listOfCars != NULL) {
         //printf(" car %d - ", listOfCars->symbol);
         for (int i = 0; i < countCodes; i++) {
@@ -323,7 +323,7 @@ void addCarCodeAndSaveToFile(char *filename) {
                 t3= (carCode *) malloc(sizeof(carCode));
                 t3->encoding = can_list[i].encoding;
                 fwrite(&t3->encoding, sizeof(uc), 1, file);
-                printf("("B_B_P") ", B2B(t3->encoding));
+                //printf("("B_B_P") ", B2B(t3->encoding));
                 t3->next = NULL;
             }
         }
@@ -336,26 +336,26 @@ void addCarCodeAndSaveToFile(char *filename) {
 
 void compress(char *file_name_in, char *file_name_out) {
     start=clock();
-    //printf("Please wait...completed");
+    printf("Please wait...completed");
     createTreeTable();
     createCodeTable();
     computeFrequencies(file_name_in);
-    //printf(" 10%%-");
+    printf(" 10%%-");
     sortTable();
     buildTree();
-    //printf("20%%-");
+    printf("20%%-");
     computeCodeLen(table[0], 0);
-    //printf("40%%-");
+    printf("40%%-");
     //computeCanonicalEncoding
     //1. Sort code_table & save in list[total_bytes]
     create_final_list_encoding();
-    //printf("60%%-");
+    printf("60%%-");
     //2. Compute canonical encoding for each item in the list
     encoding();
-    //printf("80%%-");
+    printf("80%%-");
     //3. Encode the message and save to the output file
     addCarCodeAndSaveToFile(file_name_out);
-    //printf("100%%");
+    printf("100%%");
     deleteTree(table[0]);
     end=clock();
     tempo=((double)(end-start))/CLOCKS_PER_SEC;
@@ -374,7 +374,7 @@ void read_file_binario(char *filename) {
         printf("\nIl file non esiste");
         exit(1);
     }
-    printf("\nStep 3 - lettura file_2: \n");
+    //printf("\nStep 3 - lettura file_2: \n");
     while ((ch = fgetc(file)) != 0) {
         if (ferror(file) != 0) {
             printf("Problem opening file\n");
@@ -393,7 +393,7 @@ void read_file_binario(char *filename) {
                 break;
             }
             //printf(" - reading c = %d ", c);
-            printf(" %d ", c);
+            //printf(" %d ", c);
             can_list2[w].length = c;
             //printf("length = %d ", can_list2[w].length);
             w++;
@@ -403,21 +403,21 @@ void read_file_binario(char *filename) {
 
         uc c2 = (uc) ch;
         int w2 = 0;
-        printf("\nsymbols: \n");
+        //printf("\nsymbols: \n");
         for (int i=0; i<countCodesD; i++) {
             fread(&c2, sizeof(uc), 1, file);
             //printf(" - reading c2 = %d ", c2);
             can_list2[w2].symbol = c2;
             //printf("symbol = %d ", can_list2[w2].symbol);
-            printf(" %d ", can_list2[w2].symbol);
+            //printf(" %d ", can_list2[w2].symbol);
             w2++;
         }
         break;
     }
-    printf("\nda qui codes \n");
-    for(int e=0; e<countCodesD; e++){
+    //printf("\nda qui codes \n");
+    //for(int e=0; e<countCodesD; e++){
         //printf("\n %d - %d %d "B_B_P" ",e, can_list2[e].symbol, can_list2[e].length, B2B(can_list2[e].encoding));
-    }
+    //}
     //printf("\n");
 
     listOfCodesD = (carCode *) malloc(sizeof(carCode));
@@ -446,7 +446,7 @@ void read_file_binario(char *filename) {
     int yyy=0;
     while(t9 !=NULL){
         //printf(" %d "B_B_P" ",yyy, B2B(t9->encoding));
-        printf(" "B_B_P" ", B2B(t9->encoding));
+        //printf(" "B_B_P" ", B2B(t9->encoding));
         t9=t9->next;
         yyy++;
     }
@@ -481,7 +481,7 @@ void decode_listOfCodesAndSaveToFile(char *c_outAfterDeComp) {
     carCode *r2;
     r2= listOfCodesD;
     //printf("list of codes: ");
-    printf("\nStep 4 - decodifica e salvataggio nel file di output (file_3): \n");
+    //printf("\nStep 4 - decodifica e salvataggio nel file di output (file_3): \n");
     while (r2 != NULL) {
         //printf("\n "B_B_P" ", B2B(r2->encoding));
         //listOfCarsD=(car *) malloc(sizeof(car));
@@ -504,7 +504,7 @@ void decode_listOfCodesAndSaveToFile(char *c_outAfterDeComp) {
                     //fputc(can_list2[t].symbol,file2);
 
                     fwrite(&can_list2[t].symbol, sizeof(uc), 1, file2);
-                    printf(" %d ",can_list2[t].symbol);
+                    //printf(" %d ",can_list2[t].symbol);
                 //}
                 /*if(can_list2[t].symbol==13){
                     printf(" trovato ");
@@ -518,16 +518,16 @@ void decode_listOfCodesAndSaveToFile(char *c_outAfterDeComp) {
 
 void deComp(char *c_in2, char *c_outAfterDeComp) {
     start=clock();
-    //printf("Please wait...completed ");
+    printf("Please wait...completed ");
     //open the file and read 1) arrayOfCodes[Capacity] + countCharsD number and 2) ff map[ASCII]
     read_file_binario(c_in2);
-    //printf("30%%-");
+    printf("30%%-");
     //convert the map to canonic Codes
     decoding();
-    //printf("60%%-");
+    printf("60%%-");
     //convert the codes to the listOfChars using listOfCodes and save to file
     decode_listOfCodesAndSaveToFile(c_outAfterDeComp);
-    //printf("100%%");
+    printf("100%%");
     end=clock();
     tempoD=((double)(end-start))/CLOCKS_PER_SEC;
     printf("\nFile has been decompressed successfully in %.3lf seconds!",tempoD);
@@ -536,19 +536,19 @@ void deComp(char *c_in2, char *c_outAfterDeComp) {
 int readFiles(char *filename1, char *filename2) {
     FILE *file1 = fopen(filename1, "rb");
     int yy=0;
-    printf("\nReading file1\n");
+    //printf("\nReading file1\n");
     while (EOF != (ch = fgetc(file1))) {
         uc c = (uc) ch;
-        printf(" %d-%d ",yy, c);
+        //printf(" %d-%d ",yy, c);
         yy++;
     }
     fclose(file1);
     FILE *file2 = fopen(filename2, "rb");
     int tt=0;
-    printf("\nReading file2\n");
+    //printf("\nReading file2\n");
     while (EOF != (ch = fgetc(file2))) {
         uc c = (uc) ch;
-        printf(" %d-%d ",tt, c);
+        //printf(" %d-%d ",tt, c);
         tt++;
     }
     fclose(file2);
