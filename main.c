@@ -164,7 +164,10 @@ void saveFromTableToCanList(){
 void printCanList(){
     for(int i=0; i<ASCII; i++){
         if(can_list[i].frequency>0){
-            printf("\n codifica %d %d "B_B_P"", can_list[i].symbol, can_list[i].frequency, B2B(can_list[i].encoding));
+            if(i==0 || i==ASCII-2 || i==ASCII-1){
+                printf("\n number %d -> codifica %d %d "B_B_P"", i, can_list[i].symbol, can_list[i].frequency, B2B(can_list[i].encoding));
+            }
+
         }
     }
 }
@@ -284,16 +287,74 @@ void write_header(header a[], int items, const char * fileName) {
     FILE* ptr = fopen(fileName,"wb");
     if(! ptr) return;
     fwrite( a, sizeof(header), items, ptr);
+
+    printf(" header wrote ok, writing encodings \n ");
+    // save list of encodings to file
+    int ee=0;
+    while (listOfCars != NULL) {
+        uc encoding = findEncoding(listOfCars->symbol);
+        fwrite(&encoding, sizeof(uc), 1, ptr);
+        printf(" %d-"B_B_P" ",ee, B2B(encoding));
+        ee++;
+        listOfCars = listOfCars->next;
+    }
+
+    printf("list of encodings wrote ok ");
     fclose(ptr);
+    printf("\nfile closed\n");
 }
-int read_header(header a[], const char * fileName) {
+carCode *listOfCodesD;
+int read_header(header b[], const char * fileName) {
     FILE* ptr = fopen(fileName,"rb");
     if( !ptr ) return 0;
     int n = 0;
-    for (n=0; !feof(ptr); ++n) {
-        if ( fread(&a[n],sizeof(header),1,ptr) != 1) break;
+    printf(" fopen ok \n");
+    for (n=0; n<ASCII; n++) {
+        fread(&b[n],sizeof(header),1,ptr);
+        if(n==0 || n==ASCII-2 || n==ASCII-1){
+            printf("%d - %d : %d\n",n, b[n].symbol, b[n].frequency);
+        }
+
     }
+    printf(" header finished ");
+
+    countCodesD=0;
+    countCharsD=0;
+    printf("\nStep 1 - lettura codes: \n");
+
+    listOfCodesD = (carCode *) malloc(sizeof(carCode));
+    carCode *t3;
+    t3 = listOfCodesD;
+    int ww=0;
+    uc c4;
+    ch = fgetc(ptr);
+    while (EOF != ch) {
+        uc c3 = (uc) ch;
+        if(ww==0){
+            printf(" %d - reading FFirst "B_B_P" ",ww, B2B(c3));
+        }
+        t3->encoding=c3;
+        t3->next=NULL;
+        countCharsD++;
+        ch = fgetc(ptr);
+        if(EOF != ch){
+            t3->next=(carCode *) malloc(sizeof(carCode));
+            t3=t3->next;
+        }
+        ww++;
+        c4=c3;
+    }
+    printf(" %d - reading LLast "B_B_P" ",ww, B2B(c4));
+    /*for (n=0; !feof(ptr); ++n) {
+        fread(&b[n],sizeof(header),1,ptr);
+        if ( fread(&b[n],sizeof(header),1,ptr) != 1) {
+            break;
+        }
+        printf("%d : %d\n",b[n].symbol, b[n].frequency);
+    }*/
+    printf("\n \nlist of codes finished ");
     fclose(ptr);
+
     return n;
 }
 
@@ -301,15 +362,16 @@ void saveToFile(char *filename) {
     //FILE *file = fopen(filename, "wb");
     header header_array[ASCII] ;
     int items;
-    items = numberOfItems_header(header_array);
+    //items = numberOfItems_header(header_array);
+    numberOfItems_header(header_array);
+    //write_header( header_array, items, filename);
+    write_header(header_array, ASCII, filename);
+    //header * a = malloc(sizeof(header) * items);
+    header * a = malloc(sizeof(header) * ASCII);
+    //items = read_header( a, filename);
+    read_header( a, filename);
 
-    write_header( header_array, items, filename);
-
-    header * a = malloc(sizeof(header) * items);
-
-    items = read_header( a, filename);
-
-    for (int r=0; r<items;r++){
+    for (int r=0; r<ASCII;r++){
         if(a[r].frequency>0){
             printf("%d : %d\n",a[r].symbol, a[r].frequency);
         }
@@ -358,15 +420,16 @@ void compress(char *file_name_in, char *file_name_out) {
     deleteTree(table[0]);
     listOfCars=NULL;
 
+    listOfCodesD=NULL;
 
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-carCode *listOfCodesD;
+//carCode *listOfCodesD;
 final_enc can_list2[ASCII];
 typedef struct savetf *Header2;
 
-
+/*
 void read_file_binario(char *filename) {
     countCodesD=0;
     countCharsD=0;
@@ -434,7 +497,7 @@ void read_file_binario(char *filename) {
     }
     fclose(file);
 }
-
+*/
 void decoding() { // qui si deve ricostruire albero o hash
     int i = 0;
     while (can_list2[i].frequency > 0) {
