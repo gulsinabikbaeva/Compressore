@@ -119,10 +119,10 @@ int readFileAndComputeFrequencies(char *filename) {
         printf("Problem opening file\n");
         return EXIT_FAILURE;
     }
-    /*if (ferror(file) != 0) {
+    if (ferror(file) != 0) {
         printf("Problem opening file\n");
         return EXIT_FAILURE;
-    }*/
+    }
     while (EOF != (ch = fgetc(file))) { // int ch
         uc c = (uc) ch;
         table[c]->frequency++;
@@ -320,7 +320,6 @@ void compress(char *file_name_in, char *file_name_out) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 carCode *listOfCodesD;
 final_enc can_list2[ASCII];
-typedef struct savetf *Header2;
 
 int read_header(header a[], const char * fileName) {
     FILE* ptr = fopen(fileName,"rb");
@@ -435,7 +434,6 @@ void decode_listOfCodesAndSaveToFile(char *c_outAfterDeComp) {
 void deComp(char *c_in2, char *c_outAfterDeComp) {
     start=clock();
     printf("Please wait... ");
-    //read_file_binario(c_in2);
     header * a = malloc(sizeof(header) * ASCII);
     read_header( a, c_in2);
     printf("\ncompleted 30%%");
@@ -460,7 +458,7 @@ int readFiles(char *filename1, char *filename2) {
         yy++;
     }
     fclose(file1);
-    /*FILE *file2 = fopen(filename2, "rb");
+    FILE *file2 = fopen(filename2, "rb");
     int tt=0;
     printf("\nReading file2\n");
     while (EOF != (ch = fgetc(file2))) {
@@ -468,7 +466,7 @@ int readFiles(char *filename1, char *filename2) {
         printf(" %d-%d ",tt, c);
         tt++;
     }
-    fclose(file2);*/
+    fclose(file2);
     return EXIT_SUCCESS;
 }
 
@@ -486,10 +484,10 @@ int main(int argc, char *argv[]) {
             compress(argv[2], argv[3]);
 
         } else if (strcmp(argv[1], "-d") == 0) {
-            deComp(argv[2], argv[3]); // decomprimere (c_out, c_in2); // diff cin.txt cin2.txt
+            deComp(argv[2], argv[3]); 
 
         } else if(strcmp(argv[1], "-f") == 0){
-            readFiles(argv[2], argv[3]); // stampa contenuto binario di due file
+            readFiles(argv[2], argv[3]); // stampa contenuto binario dei file
         } else {
             fprintf(stderr,
                     "\nLe opzioni sono: -c per comprimere e -d per decomprimere. Si prega di specificare l'opzione da eseguire, il file di input ed il file di destinazione.\n");
